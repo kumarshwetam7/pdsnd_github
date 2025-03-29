@@ -1,0 +1,144 @@
+*Slide1---Customer Rental Patterns*
+
+WITH CustomerRentals AS (
+    SELECT 
+        c.customer_id, 
+        c.first_name, 
+        c.last_name, 
+        COUNT(r.rental_id) AS rental_count
+    FROM 
+        customer c
+    JOIN 
+        rental r ON c.customer_id = r.customer_id
+    GROUP BY 
+        c.customer_id, c.first_name, c.last_name
+)
+SELECT 
+    customer_id, 
+    first_name, 
+    last_name, 
+    rental_count,
+    RANK() OVER (ORDER BY rental_count DESC) AS rental_rank
+FROM 
+    CustomerRentals
+ORDER BY 
+    rental_rank;
+-----------------------------------------------------------------------------------------
+*Slide2---Store Performance by Month*
+SELECT 
+    EXTRACT(YEAR FROM r.rental_date) AS year,
+    EXTRACT(MONTH FROM r.rental_date) AS month,
+    i.store_id,
+    COUNT(r.rental_id) AS rental_orders_count,
+    ROW_NUMBER() OVER (PARTITION BY EXTRACT(YEAR FROM r.rental_date), EXTRACT(MONTH FROM r.rental_date) ORDER BY COUNT(r.rental_id) DESC) AS monthly_rank
+FROM 
+    rental r
+JOIN 
+    inventory i ON r.inventory_id = i.inventory_id
+GROUP BY 
+    year, month, i.store_id
+ORDER BY 
+    rental_orders_count DESC;
+---------------------------------------------------------------------------------------------
+*Slide3--- Payment Earnings Comparison*
+WITH TopCustomers AS (
+    SELECT 
+        p.customer_id,
+        CONCAT(c.first_name, ' ', c.last_name) AS fullname,
+        SUM(p.amount) AS total_payment
+    FROM 
+        payment p
+    JOIN 
+        customer c ON p.customer_id = c.customer_id
+    WHERE 
+        EXTRACT(YEAR FROM p.payment_date) = 2007
+    GROUP BY 
+        p.customer_id, fullname
+    ORDER BY 
+        total_payment DESC
+    LIMIT 10
+),
+MonthlyPayments AS (
+    SELECT 
+        p.customer_id,
+        CONCAT(c.first_name, ' ', c.last_name) AS fullname,
+        EXTRACT(YEAR FROM p.payment_date) AS year,
+        EXTRACT(MONTH FROM p.payment_date) AS month,
+        SUM(p.amount) AS total_payment_amount
+    FROM 
+        payment p
+    JOIN 
+        customer c ON p.customer_id = c.customer_id
+    WHERE 
+        EXTRACT(YEAR FROM p.payment_date) = 2007
+        AND p.customer_id IN (SELECT customer_id FROM TopCustomers)
+    GROUP BY 
+        p.customer_id, fullname, year, month
+)
+SELECT 
+    fullname,
+    year,
+    month,
+    total_payment_amount
+FROM 
+    MonthlyPayments
+ORDER BY 
+    fullname, year, month;
+-----------------------------------------------------------------------------------
+*Slide4--- Monthly Payment Differences*
+
+WITH TopCustomers AS (
+    SELECT 
+        p.customer_id,
+        CONCAT(c.first_name, ' ', c.last_name) AS fullname,
+        SUM(p.amount) AS total_payment
+    FROM 
+        payment p
+    JOIN 
+        customer c ON p.customer_id = c.customer_id
+    WHERE 
+        EXTRACT(YEAR FROM p.payment_date) = 2007
+    GROUP BY 
+        p.customer_id, fullname
+    ORDER BY 
+        total_payment DESC
+    LIMIT 10
+),
+MonthlyPayments AS (
+    SELECT 
+        p.customer_id,
+        CONCAT(c.first_name, ' ', c.last_name) AS fullname,
+        EXTRACT(YEAR FROM p.payment_date) AS year,
+        EXTRACT(MONTH FROM p.payment_date) AS month,
+        SUM(p.amount) AS total_payment_amount
+    FROM 
+        payment p
+    JOIN 
+        customer c ON p.customer_id = c.customer_id
+    WHERE 
+        EXTRACT(YEAR FROM p.payment_date) = 2007
+        AND p.customer_id IN (SELECT customer_id FROM TopCustomers)
+    GROUP BY 
+        p.customer_id, fullname, year, month
+),
+MonthlyDifferences AS (
+    SELECT 
+        fullname,
+        year,
+        month,
+        total_payment_amount,
+        LAG(total_payment_amount) OVER (PARTITION BY fullname ORDER BY year, month) AS previous_month_payment,
+        total_payment_amount - LAG(total_payment_amount) OVER (PARTITION BY fullname ORDER BY year, month) AS payment_difference
+    FROM 
+        MonthlyPayments
+)
+SELECT 
+    fullname,
+    year,
+    month,
+    total_payment_amount,
+    payment_difference
+FROM 
+    MonthlyDifferences
+ORDER BY 
+    fullname, year, month;
