@@ -200,7 +200,7 @@ def user_stats(df):
     user_types = df['User Type'].value_counts()
     print(user_types,'\n')
     
-    
+  
     
     # TO DO: Display counts of gender
     if 'Gender' in df.columns:    
