@@ -10,25 +10,23 @@ Investigate a Relational Database
 In this project, you will use SQL to explore a database related to movie rentals. You will write SQL code to run SQL queries and answer interesting questions about the database. As part of your project submission, you will run SQL queries and build visualizations to showcase the output of your queries.
 
 ### Files used
-1. The following file contains necessary queries:
-   * Shwetam  Project Queries.txt	
-2. The following file contains Visualisations of the resulted data from corresponding queries:
-   * sql-project-submission-Shwetam.pdf
-3. The following files are not uploaded to remote repo by using **.gitignore** because the files are too big:
+
+1. The following files are not uploaded to remote repo by using **.gitignore** because the files are too big:
    * chicago.csv
    * new_york_city.csv
-   * washington.csv
-  
-4. * bikeshare.py	
-
+   * washington.csv 
+2. * bikeshare.py	1. The following file contains necessary queries:
+3.  * Shwetam  Project Queries.txt	
+4. The following file contains Visualisations of the resulted data from corresponding queries:
+   * sql-project-submission-Shwetam.pdf
 
 
 ### Credits
-* [SQL Style Guide](https://www.sqlstyle.guide/)
-* If I have doubts about the errors occured while running the query I used: www.stackoverflow.com
-* * [Pandas documentation is very usefull.](https://pandas.pydata.org/docs/)
+ * [Pandas documentation is very usefull.](https://pandas.pydata.org/docs/)
 * [Numpy documentation.](https://numpy.org/doc/) (if needed)
 * [Python documentation for controlflow.](https://docs.python.org/3/tutorial/controlflow.html)
+* * [SQL Style Guide](https://www.sqlstyle.guide/)
+* If I have doubts about the errors occured while running the query I used: www.stackoverflow.com
 
 
 
