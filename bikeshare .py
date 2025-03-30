@@ -261,7 +261,8 @@ def main():
         if restart.lower() != 'yes':
             print('BYE!')
             break
+	print("Finished the Project")	
 
-
+ 
 if __name__ == "__main__":
 	main()
