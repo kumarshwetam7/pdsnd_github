@@ -20,8 +20,6 @@ A terminal application (Terminal on Mac and Linux or Cygwin on Windows).
    * washington.csv 
 2. * bikeshare.py	1. The following file contains necessary queries:
 
-
-
 ### Credits
  * [Pandas documentation is very usefull.](https://pandas.pydata.org/docs/)
 * [Numpy documentation.](https://numpy.org/doc/) (if needed)
